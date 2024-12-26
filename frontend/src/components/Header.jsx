@@ -1,5 +1,6 @@
 // src/components/Header.jsx
 import styles from './Header.module.css';
+import { MdOutlineLogin } from "react-icons/md";
 
 function Header() {
   return (
@@ -8,8 +9,8 @@ function Header() {
         <div className={styles.navbar}>
           <h1>UniMerch</h1>
           <nav className={styles.nav}>
-            <a href="#home">Home</a>
-            <a href="#shop">Shop</a>
+            <a href="/">Home</a>
+            <a href="/">Shop</a>
             <a href="#contact">Contact</a>
             <a href="#about">About</a>
             <a href="#privacy-policy">Privacy Policy</a>
@@ -26,8 +27,8 @@ function Header() {
             </button>
           </div>
           <div className={styles.nav}>
-            <a>Sign In</a>
-            <a>Sign Up</a>
+            <a href='/login'>Log In <MdOutlineLogin/></a>
+            <a href='/signup' className='px-4 py-2 rounded-full bg-gray-800 hover:bg-slate-950 text-white'>Sign Up</a>
           </div>
         </div>
       </div>
