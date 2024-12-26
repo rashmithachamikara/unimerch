@@ -14,13 +14,20 @@ function Header() {
             <a href="#about">About</a>
             <a href="#privacy-policy">Privacy Policy</a>
           </nav>
-          <div>
-            <input type="text" placeholder="Search..." />
-            <button>Search</button>
+          {/* Search Bar */}
+          <div className={`hidden md:flex items-center ${styles.searchbar}`}>
+            <input
+              type="text"
+              placeholder="Product name"
+              className="px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            />
+            <button className="px-4 py-2 bg-gray-800 border border-gray-300 text-white rounded-r-full hover:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-500">
+              Search
+            </button>
           </div>
-          <div>
-            <button>Sign In</button>
-            <button>Sign Up</button>
+          <div className={styles.nav}>
+            <a>Sign In</a>
+            <a>Sign Up</a>
           </div>
         </div>
       </div>
