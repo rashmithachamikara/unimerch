@@ -1,5 +1,10 @@
 /* Global stylesheet */
 
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   font-family: 'poppins', sans-serif;
   margin: 0;
