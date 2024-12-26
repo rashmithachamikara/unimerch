@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -23,10 +24,19 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required',
-            'slug' => 'required|unique:products'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation for the image
         ]);
 
-        return Product::create($request->all());
+        $data = $request->all();
+        $data['slug'] = \Str::slug($request->name); // Generate a slug from the name
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public'); // Store the image in 'storage/app/public/products'
+            $data['image'] = $path; // Save the file path
+        }
+
+        return Product::create($data);
     }
 
     /**
@@ -39,8 +49,8 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        
-        return Product::find($id);
+
+        return $product;
     }
 
     /**
@@ -48,9 +58,35 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $prodcut = Product::find($id);
-        $prodcut->update($request->all());
-        return $prodcut;
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $request->validate([
+            'name' => 'sometimes|required',
+            'price' => 'sometimes|required',
+            'slug' => 'sometimes|required|unique:products,slug,' . $id,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation for the image
+        ]);
+
+        $data = $request->all();
+        $data['slug'] = \Str::slug($request->name); // Generate a slug from the name
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete the old image if exists
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $path = $request->file('image')->store('products', 'public'); // Store the image in 'storage/app/public/products'
+            $data['image'] = $path; // Save the file path
+        }
+
+        $product->update($data);
+        return $product;
     }
 
     /**
@@ -58,7 +94,19 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        return Product::destroy($id);
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        // Delete the associated image
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $product->delete();
+        return response()->json(['message' => 'Product deleted successfully']);
     }
 
     /**
