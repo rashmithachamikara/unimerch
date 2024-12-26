@@ -18,8 +18,10 @@ function ShopPage() {
 
   return (
     <div>
-      <h1>Shop</h1>
-      <div className="product-list">
+      <div className='container'>
+        <h1>Shop</h1>
+      </div>
+      <div className="product-list container">
         {products.map(product => (
           <div key={product.id} className="product">
             <h2>{product.name}</h2>

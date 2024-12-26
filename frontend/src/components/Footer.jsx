@@ -1,8 +1,10 @@
 // src/components/Footer.js
+import styles from './Footer.module.css';
+
 function Footer() {
     return (
-      <footer>
-        <p>&copy; 2024 E-commerce Site</p>
+      <footer className={styles.footer}>
+        <p>&copy; 2024 UniMerch. All rights reserved.</p>
       </footer>
     );
   }

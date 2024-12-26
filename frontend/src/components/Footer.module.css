@@ -1,0 +1,9 @@
+/* Footer.module.css */
+
+.footer {
+  background-color: #141414;
+  color: white;
+  padding: 20px;
+  margin-top: 50px;
+  text-align: center;
+}
