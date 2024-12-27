@@ -18,7 +18,7 @@ function LoginPage() {
       const response = await axiosInstance.post('/login', formData); // Make the login request
       loginUser(response); // Save the user data and token to localStorage
       // Redirect user to the dashboard or home page
-      window.location.href = '/dashboard'; // Or use React Router to navigate
+      window.location.href = '/'; // Or use React Router to navigate
     } catch (err) {
       setError('Invalid credentials. Please try again.'); // Handle login error
       setIsLoading(false);

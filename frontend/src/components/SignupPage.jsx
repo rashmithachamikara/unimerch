@@ -59,7 +59,7 @@ function SignupPage() {
         console.log('User registered successfully:', response.data);
 
         // Redirect to login page after successful registration (optional)
-        window.location.href = '/login';
+        window.location.href = '/';
       } catch (error) {
         if (error.response && error.response.data) {
           setApiError(error.response.data.message || 'An error occurred. Please try again.');
