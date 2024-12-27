@@ -21,6 +21,8 @@ function LoginPage() {
       window.location.href = '/'; // Or use React Router to navigate
     } catch (err) {
       setError('Invalid credentials. Please try again.'); // Handle login error
+      console.log(err);
+      
       setIsLoading(false);
     }
   };
