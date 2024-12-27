@@ -6,32 +6,37 @@ function AdminEditProduct() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
     stock: '',
-    image: null,
-    category: ''
+    image: null
   });
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axiosInstance.get(`/products/${id}`);
-        const { name, description, price, stock } = response.data;
+        const { name, description, price, stock, image } = response.data;
         setFormData({
           name,
           description,
           price,
           stock,
-          image: null, // Existing image isn't loaded for editing.
+          image: null
         });
+        // If the product has an image, set the preview URL
+        if (image) {
+          setPreviewImage(`${import.meta.env.VITE_IMAGE_BASE_URL}/${image}`);
+        } else {
+          setPreviewImage('');
+        }
       } catch (error) {
         console.error('Error fetching product data:', error);
       }
     };
-
     fetchProduct();
   }, [id]);
 
@@ -42,6 +47,8 @@ function AdminEditProduct() {
         ...formData,
         image: files[0]
       });
+      // Create preview URL for the new image
+      setPreviewImage(URL.createObjectURL(files[0]));
     } else {
       setFormData({
         ...formData,
@@ -56,13 +63,18 @@ function AdminEditProduct() {
 
     try {
       const formPayload = new FormData();
+      
+      // Only append changed fields
       Object.keys(formData).forEach(key => {
-        if (formData[key]) {
+        if (formData[key] !== null) {
           formPayload.append(key, formData[key]);
         }
       });
 
-      await axiosInstance.put(`/products/${id}`, formPayload, {
+      // Add _method field for Laravel to handle PUT request
+      formPayload.append('_method', 'PUT');
+
+      await axiosInstance.post(`/products/${id}`, formPayload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -77,11 +89,10 @@ function AdminEditProduct() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-12">
-        <br />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-md rounded-lg p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Product</h1>
-
+          
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -126,7 +137,7 @@ function AdminEditProduct() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Stock
@@ -145,8 +156,21 @@ function AdminEditProduct() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Product Image (Optional)
+                Product Image
               </label>
+              <div className="mb-4">
+                {previewImage ? (
+                  <img
+                    src={previewImage}
+                    alt="Product preview"
+                    className="h-32 w-32 object-cover rounded-md"
+                  />
+                ) : (
+                  <div className="h-32 w-32 bg-gray-200 flex items-center justify-center rounded-md text-gray-600">
+                    No Image
+                  </div>
+                )}
+              </div>
               <input
                 type="file"
                 name="image"
@@ -154,6 +178,9 @@ function AdminEditProduct() {
                 onChange={handleChange}
                 className="w-full"
               />
+              <p className="mt-1 text-sm text-gray-500">
+                Allowed formats: JPEG, PNG, JPG, GIF, WEBP (max 2MB)
+              </p>
             </div>
 
             <div className="flex justify-end space-x-4">
@@ -175,7 +202,6 @@ function AdminEditProduct() {
           </form>
         </div>
       </div>
-      <br />
     </div>
   );
 }
