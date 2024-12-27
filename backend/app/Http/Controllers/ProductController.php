@@ -24,7 +24,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation for the image
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Validation for the image
         ]);
 
         $data = $request->all();
@@ -57,37 +57,38 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $product = Product::find($id);
+{
+    $product = Product::find($id);
 
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
-        $request->validate([
-            'name' => 'sometimes|required',
-            'price' => 'sometimes|required',
-            'slug' => 'sometimes|required|unique:products,slug,' . $id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation for the image
-        ]);
-
-        $data = $request->all();
-        $data['slug'] = \Str::slug($request->name); // Generate a slug from the name
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete the old image if exists
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-
-            $path = $request->file('image')->store('products', 'public'); // Store the image in 'storage/app/public/products'
-            $data['image'] = $path; // Save the file path
-        }
-
-        $product->update($data);
-        return $product;
+    if (!$product) {
+        return response()->json(['message' => 'Product not found'], 404);
     }
+
+    $request->validate([
+        'name' => 'sometimes|required',
+        'price' => 'sometimes|required',
+        'slug' => 'sometimes|required|unique:products,slug,' . $id,
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Validation for the image
+    ]);
+
+    $data = $request->all();
+    $data['slug'] = \Str::slug($request->name); // Generate a slug from the name
+
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        // Delete the old image if exists
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $path = $request->file('image')->store('products', 'public'); // Store the image in 'storage/app/public/products'
+        $data['image'] = $path; // Save the file path
+    }
+
+    $product->update($data);
+    return $product;
+}
+
 
     /**
      * Remove the specified resource from storage.
