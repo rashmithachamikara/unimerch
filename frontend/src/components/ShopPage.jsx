@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './ShopPage.module.css';
 import axiosInstance from '../utils/axios';
 import fashionModel from '../assets/Model-PNG-Pic.png';
+import zebra from '../assets/zebra.jpg';
 
 function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -30,6 +31,11 @@ function ShopPage() {
     backgroundRepeat: 'no-repeat'
   };
 
+  const zebraStyle = {
+    backgroundSize: 'cover',
+    backgroundImage: `url(${zebra})`,
+  };
+
   return (
     <div className="min-h-screen">
       <div style={heroStyles}>
@@ -49,7 +55,9 @@ function ShopPage() {
         </div>
       </div>
 
-      <div className={styles.partners}></div>
+      
+
+      <div style={zebraStyle} className={styles.partners}></div>
 
       <div className="py-12">
         <h2 className="text-center text-4xl font-bold mb-12">Our Products</h2>
@@ -74,7 +82,7 @@ function ShopPage() {
                       <img
                         src={`${import.meta.env.VITE_IMAGE_BASE_URL}${product.image}`}
                         alt={product.name}
-                        className="w-full h-64 object-contain object-center"
+                        className="w-full h-64 object-cover object-center"
                       />
                     ) : (
                       <div className="h-64 w-full bg-gray-200 flex items-center justify-center rounded">
