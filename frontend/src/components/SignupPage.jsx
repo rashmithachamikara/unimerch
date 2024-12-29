@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';  // Import axios
 import { signupUser } from '../utils/axios'; // Import the signupUser function from axios
+import axiosInstance from '../utils/axios';
 
 function SignupPage() {
   const [formData, setFormData] = useState({
@@ -47,7 +47,7 @@ function SignupPage() {
 
       try {
         // Send data to backend
-        const response = await axios.post('http://localhost:8000/api/register', {
+        const response = await axiosInstance.post('/register', {
           name: formData.name,
           email: formData.email,
           password: formData.password,
